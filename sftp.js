@@ -1,8 +1,11 @@
-const { deploy } = require('sftp-sync-deploy');
+const {
+  deploy
+} = require('sftp-sync-deploy');
 const core = require('@actions/core');
 const github = require('@actions/github');
-
-console.log(core.getInput('dryRun'));
+const {
+  optionalStringArray
+} = require('./parse');
 
 let config = {
   host: core.getInput('host'), // Required.
@@ -13,13 +16,14 @@ let config = {
   //  passphrase: 'passphrase',       // Optional.
   //  agent: '/path/to/agent.sock',   // Optional, path to the ssh-agent socket.
   localDir: core.getInput('localDir'), // Required, Absolute or relative to cwd.
-  remoteDir: core.getInput('remoteDir') // Required, Absolute path only.
+  remoteDir: core.getInput('remoteDir'), // Required, Absolute path only.
 };
 
 let options = {
-  dryRun: JSON.parse(core.getInput('dryRun')), // Enable dry-run mode. Default to false
-  excludeMode: 'remove', // Behavior for excluded files ('remove' or 'ignore'), Default to 'remove'.
-  forceUpload: false // Force uploading all files, Default to false(upload only newer files).
+  exclude: optionalStringArray('exclude', core.getInput('exclude')),
+  dryRun: JSON.parse(core.getInput('dryRun')),
+  excludeMode: core.getInput('excludeMode') || 'remove',
+  forceUpload: JSON.parse(core.getInput('forceUpload'))
 };
 
 deploy(config, options)
