@@ -1,4 +1,4 @@
-name: 'SFTP uploader'
+name: 'SFTP uploader fork'
 color: 'green'
 icon: 'upload'
 description: 'upload files to server via SFTP'
@@ -18,6 +18,14 @@ inputs:
   remoteDir:
     required: true
   dryRun:
+    required: false
+    default: false
+  exclude:
+    required: false
+  excludeMode:
+    required: false
+    default: 'remove'
+  forceUpload:
     required: false
     default: false
 runs:
