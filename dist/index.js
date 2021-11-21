@@ -32873,14 +32873,49 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 7382:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "optionalStringArray": () => /* binding */ optionalStringArray
+/* harmony export */ });
+function optionalStringArray(argumentName, rawValue) {
+    if (rawValue.length === 0) {
+        return undefined;
+    }
+
+    const valueTrim = rawValue.trim();
+
+    if (valueTrim.startsWith("[")) {
+        // remove [ and ] - then convert to array
+        return rawValue.replace(/[\[\]]/g, "").trim().split(", ").filter(str => str !== "");
+    }
+
+    // split value by space and comma
+    const valueAsArrayDouble = rawValue.split(" - ").map(str => str.trim()).filter(str => str !== "");
+
+    if (valueAsArrayDouble.length) {
+        return valueAsArrayDouble;
+    }
+
+    throw new Error(`${argumentName}: invalid parameter - you provided "${rawValue}". This option excepts an array in the format [val1, val2] or val1\/n - val2`);
+}
+
+/***/ }),
+
 /***/ 5857:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-const { deploy } = __webpack_require__(9405);
+const {
+  deploy
+} = __webpack_require__(9405);
 const core = __webpack_require__(2186);
 const github = __webpack_require__(5438);
-
-console.log(core.getInput('dryRun'));
+const {
+  optionalStringArray
+} = __webpack_require__(7382);
 
 let config = {
   host: core.getInput('host'), // Required.
@@ -32891,13 +32926,14 @@ let config = {
   //  passphrase: 'passphrase',       // Optional.
   //  agent: '/path/to/agent.sock',   // Optional, path to the ssh-agent socket.
   localDir: core.getInput('localDir'), // Required, Absolute or relative to cwd.
-  remoteDir: core.getInput('remoteDir') // Required, Absolute path only.
+  remoteDir: core.getInput('remoteDir'), // Required, Absolute path only.
 };
 
 let options = {
-  dryRun: JSON.parse(core.getInput('dryRun')), // Enable dry-run mode. Default to false
-  excludeMode: 'remove', // Behavior for excluded files ('remove' or 'ignore'), Default to 'remove'.
-  forceUpload: false // Force uploading all files, Default to false(upload only newer files).
+  exclude: optionalStringArray('exclude', core.getInput('exclude')),
+  dryRun: JSON.parse(core.getInput('dryRun')),
+  excludeMode: core.getInput('excludeMode') || 'remove',
+  forceUpload: JSON.parse(core.getInput('forceUpload'))
 };
 
 deploy(config, options)
@@ -32908,7 +32944,6 @@ deploy(config, options)
     console.error('sftp upload error! ', err);
     core.setFailed(err.message)
   });
-
 
 /***/ }),
 
@@ -33107,6 +33142,34 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
 /******/ 	(() => {
 /******/ 		__webpack_require__.nmd = (module) => {
